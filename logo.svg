@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff2d55"/>
+      <stop offset="1" stop-color="#ff6b3d"/>
+    </linearGradient>
+    <mask id="gap">
+      <rect width="100" height="100" fill="#fff"/>
+      <circle cx="71" cy="71" r="21.5" fill="#000"/>
+    </mask>
+    <clipPath id="shoulders"><rect width="100" height="79"/></clipPath>
+  </defs>
+  <rect width="100" height="100" rx="23" fill="url(#g)"/>
+  <g fill="#fff" mask="url(#gap)">
+    <circle cx="40" cy="34" r="13.5"/>
+    <circle cx="40" cy="86" r="27" clip-path="url(#shoulders)"/>
+  </g>
+  <circle cx="71" cy="71" r="17" fill="#16131f"/>
+  <rect x="63.5" y="67.8" width="15" height="6.4" rx="3.2" fill="#fff"/>
+</svg>
