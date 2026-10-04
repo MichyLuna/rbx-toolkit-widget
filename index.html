@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<title>RBX Toolkit – Widget OBS</title>
+<title>RBX Toolkit – OBS widget</title>
+<meta name="robots" content="noindex">
 <style>
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -36,28 +37,28 @@
   body.compact .bar, body.compact .top { display: none; }
   body.compact .alert { margin-top: 0; }
 
-  /* Riquadro "Aggiungimi su Roblox" */
+  /* "Add me on Roblox" box */
   .addme { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .06); text-align: center; }
   .addme .label { display: block; }
   .addme strong { display: block; font-size: 20px; margin-top: 2px; }
   .addme small { display: block; color: #b9b3c9; font-size: 12px; margin-top: 4px; }
 
-  /* Suggerimento (es. "mandami prima la richiesta") */
+  /* Hint (e.g. "send me a request first") */
   .hint { margin-top: 10px; padding: 8px 12px; border-radius: 12px; background: rgba(255, 176, 32, .18); color: #ffd58a; font-weight: 600; font-size: 13px; animation: in .4s ease-out; }
 
   .hint.ok { background: rgba(47, 209, 135, .18); color: #8ff0c0; }
 
-  /* Info (!roblox, !gioco) */
+  /* Info (!roblox, !game) */
   .info { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(91, 140, 255, .2); border: 1px solid rgba(91, 140, 255, .45); animation: in .5s cubic-bezier(.2, 1.4, .4, 1); }
   .info strong { display: block; font-size: 20px; margin-top: 2px; }
   .info small { display: block; color: #c9d6ff; font-size: 12px; margin-top: 4px; }
 
-  /* Coda "Gioca con me" */
+  /* "Play with me" queue */
   .queue-line { margin-top: 10px; font-size: 13px; font-weight: 700; color: #b9b3c9; }
   .alert.turn { background: linear-gradient(135deg, rgba(47, 209, 135, .35), rgba(47, 209, 135, .12)); border: 1px solid rgba(47, 209, 135, .6); }
   .alert small { display: block; color: #b9b3c9; font-size: 12px; margin-top: 2px; }
 
-  /* Layout verticale per TikTok */
+  /* Vertical layout for TikTok */
   body.vertical .card { width: 300px; padding: 18px; text-align: center; }
   body.vertical .top { flex-direction: column; gap: 6px; }
   body.vertical .title { align-items: center; }
@@ -82,20 +83,20 @@
         <circle cx="71" cy="71" r="17" fill="#16131f"/><rect x="63.5" y="67.8" width="15" height="6.4" rx="3.2" fill="#fff"/>
       </svg>
       <div class="title">
-        <span class="label" id="label">Amici Roblox</span>
+        <span class="label" id="label"></span>
         <span class="count"><b id="count">—</b> / <span id="goal">1000</span></span>
       </div>
     </div>
     <div class="bar"><div id="fill"></div></div>
     <div id="addme" class="addme" hidden>
-      <span class="label">Aggiungimi su Roblox</span>
+      <span class="label" id="addmeLabel"></span>
       <strong id="addmeName"></strong>
       <small id="addmeHow"></small>
     </div>
     <div id="alert" class="alert" hidden>
       <img id="alertAvatar" alt="">
       <div>
-        <span class="label" id="alertLabel">Nuovo amico!</span>
+        <span class="label" id="alertLabel"></span>
         <strong id="alertName"></strong>
         <small id="alertSub" hidden></small>
       </div>
@@ -111,8 +112,169 @@
   </div>
 
 <script>
-  // Parametri nell'URL: #k=<codice>&goal=1000&compact=1&label=Testo
+  // Parameters in the URL hash: #k=<code>&goal=1000&lang=en&v=1&compact=1&me=name&cmd=!add&color=ff2d55&sound=1&tpl=Text
   const params = new URLSearchParams(location.hash.slice(1) || location.search.slice(1));
+
+  const STRINGS = {
+    "en": {
+      "friends": "Roblox friends",
+      "addMe": "Add me on Roblox",
+      "howTo": "Send me a request and type {cmd} YourName in chat",
+      "newFriend": "New friend!",
+      "fromLive": "Welcome from the live!",
+      "yourTurn": "Your turn! 🎮",
+      "left": "Still in queue: {n}",
+      "last": "Last in the queue",
+      "queueLine": "🎮 In queue to play: {n}",
+      "queued": "{name} is in the queue (#{pos})",
+      "reconnecting": "Reconnecting…",
+      "badLink": "Incomplete link: copy the link again from the RBX Toolkit dashboard.",
+      "oldLink": "Outdated link: copy the new widget link from the RBX Toolkit dashboard."
+    },
+    "it": {
+      "friends": "Amici Roblox",
+      "addMe": "Aggiungimi su Roblox",
+      "howTo": "Mandami la richiesta e scrivi {cmd} TuoNome in chat",
+      "newFriend": "Nuovo amico!",
+      "fromLive": "Benvenuto dalla live!",
+      "yourTurn": "Tocca a te! 🎮",
+      "left": "Ancora in coda: {n}",
+      "last": "Ultimo della coda",
+      "queueLine": "🎮 In coda per giocare: {n}",
+      "queued": "{name} è in coda (#{pos})",
+      "reconnecting": "Riconnessione…",
+      "badLink": "Link incompleto: copia di nuovo il link dalla dashboard di RBX Toolkit.",
+      "oldLink": "Link non aggiornato: copia il nuovo link del widget dalla dashboard di RBX Toolkit."
+    },
+    "es": {
+      "friends": "Amigos de Roblox",
+      "addMe": "Agrégame en Roblox",
+      "howTo": "Envíame una solicitud y escribe {cmd} TuNombre en el chat",
+      "newFriend": "¡Nuevo amigo!",
+      "fromLive": "¡Bienvenido desde el directo!",
+      "yourTurn": "¡Te toca! 🎮",
+      "left": "Siguen en cola: {n}",
+      "last": "Último de la cola",
+      "queueLine": "🎮 En cola para jugar: {n}",
+      "queued": "{name} está en la cola (#{pos})",
+      "reconnecting": "Reconectando…",
+      "badLink": "Enlace incompleto: vuelve a copiar el enlace desde el panel de RBX Toolkit.",
+      "oldLink": "Enlace desactualizado: copia el nuevo enlace del widget desde el panel de RBX Toolkit."
+    },
+    "pt": {
+      "friends": "Amigos do Roblox",
+      "addMe": "Me adicione no Roblox",
+      "howTo": "Me mande um pedido e digite {cmd} SeuNome no chat",
+      "newFriend": "Novo amigo!",
+      "fromLive": "Bem-vindo da live!",
+      "yourTurn": "Sua vez! 🎮",
+      "left": "Ainda na fila: {n}",
+      "last": "Último da fila",
+      "queueLine": "🎮 Na fila para jogar: {n}",
+      "queued": "{name} está na fila (#{pos})",
+      "reconnecting": "Reconectando…",
+      "badLink": "Link incompleto: copie o link de novo no painel do RBX Toolkit.",
+      "oldLink": "Link desatualizado: copie o novo link do widget no painel do RBX Toolkit."
+    },
+    "fr": {
+      "friends": "Amis Roblox",
+      "addMe": "Ajoute-moi sur Roblox",
+      "howTo": "Envoie-moi une demande et écris {cmd} TonNom dans le chat",
+      "newFriend": "Nouvel ami !",
+      "fromLive": "Bienvenue depuis le live !",
+      "yourTurn": "À toi ! 🎮",
+      "left": "Encore dans la file : {n}",
+      "last": "Dernier de la file",
+      "queueLine": "🎮 Dans la file pour jouer : {n}",
+      "queued": "{name} est dans la file (#{pos})",
+      "reconnecting": "Reconnexion…",
+      "badLink": "Lien incomplet : recopie le lien depuis le tableau de bord de RBX Toolkit.",
+      "oldLink": "Lien obsolète : copiez le nouveau lien du widget depuis le tableau de bord RBX Toolkit."
+    },
+    "de": {
+      "friends": "Roblox-Freunde",
+      "addMe": "Füg mich auf Roblox hinzu",
+      "howTo": "Schick mir eine Anfrage und schreib {cmd} DeinName in den Chat",
+      "newFriend": "Neuer Freund!",
+      "fromLive": "Willkommen aus dem Livestream!",
+      "yourTurn": "Du bist dran! 🎮",
+      "left": "Noch in der Warteschlange: {n}",
+      "last": "Letzter in der Warteschlange",
+      "queueLine": "🎮 Warteschlange zum Mitspielen: {n}",
+      "queued": "{name} ist in der Warteschlange (#{pos})",
+      "reconnecting": "Verbindung wird wiederhergestellt…",
+      "badLink": "Unvollständiger Link: kopiere den Link erneut aus dem RBX-Toolkit-Dashboard.",
+      "oldLink": "Veralteter Link: Kopiere den neuen Widget-Link aus dem RBX-Toolkit-Dashboard."
+    },
+    "pl": {
+      "friends": "Znajomi w Roblox",
+      "addMe": "Dodaj mnie w Roblox",
+      "howTo": "Wyślij mi zaproszenie i napisz na czacie {cmd} TwojaNazwa",
+      "newFriend": "Nowy znajomy!",
+      "fromLive": "Witaj z live!",
+      "yourTurn": "Twoja kolej! 🎮",
+      "left": "Wciąż w kolejce: {n}",
+      "last": "Ostatni w kolejce",
+      "queueLine": "🎮 W kolejce do gry: {n}",
+      "queued": "{name} jest w kolejce (#{pos})",
+      "reconnecting": "Ponowne łączenie…",
+      "badLink": "Niepełny link: skopiuj link ponownie z panelu RBX Toolkit.",
+      "oldLink": "Nieaktualny link: skopiuj nowy link widżetu z panelu RBX Toolkit."
+    },
+    "tr": {
+      "friends": "Roblox arkadaşları",
+      "addMe": "Beni Roblox'ta ekle",
+      "howTo": "Bana istek gönder ve sohbete {cmd} RobloxAdın yaz",
+      "newFriend": "Yeni arkadaş!",
+      "fromLive": "Yayından hoş geldin!",
+      "yourTurn": "Sıra sende! 🎮",
+      "left": "Hâlâ sırada: {n}",
+      "last": "Sıranın sonuncusu",
+      "queueLine": "🎮 Oynamak için sırada: {n}",
+      "queued": "{name} sırada (#{pos})",
+      "reconnecting": "Yeniden bağlanılıyor…",
+      "badLink": "Eksik bağlantı: bağlantıyı RBX Toolkit panelinden tekrar kopyala.",
+      "oldLink": "Eski bağlantı: yeni widget bağlantısını RBX Toolkit panelinden kopyala."
+    },
+    "ru": {
+      "friends": "Друзья в Roblox",
+      "addMe": "Добавь меня в Roblox",
+      "howTo": "Отправь мне заявку и напиши в чат {cmd} ТвойНик",
+      "newFriend": "Новый друг!",
+      "fromLive": "Привет со стрима!",
+      "yourTurn": "Твоя очередь! 🎮",
+      "left": "Ещё в очереди: {n}",
+      "last": "Последний в очереди",
+      "queueLine": "🎮 В очереди на игру: {n}",
+      "queued": "{name} в очереди (#{pos})",
+      "reconnecting": "Переподключение…",
+      "badLink": "Неполная ссылка: скопируй ссылку заново в панели RBX Toolkit.",
+      "oldLink": "Устаревшая ссылка: скопируйте новую ссылку на виджет в панели RBX Toolkit."
+    },
+    "id": {
+      "friends": "Teman Roblox",
+      "addMe": "Tambahkan aku di Roblox",
+      "howTo": "Kirim permintaan ke aku lalu ketik {cmd} NamaKamu di chat",
+      "newFriend": "Teman baru!",
+      "fromLive": "Selamat datang dari live!",
+      "yourTurn": "Giliranmu! 🎮",
+      "left": "Masih di antrean: {n}",
+      "last": "Terakhir di antrean",
+      "queueLine": "🎮 Antre untuk main: {n}",
+      "queued": "{name} masuk antrean (#{pos})",
+      "reconnecting": "Menyambung ulang…",
+      "badLink": "Link tidak lengkap: salin lagi link-nya dari dasbor RBX Toolkit.",
+      "oldLink": "Link usang: salin link widget yang baru dari dasbor RBX Toolkit."
+    }
+  };
+  const LOCALES = { en: "en-US", it: "it-IT", es: "es-ES", pt: "pt-BR", fr: "fr-FR", de: "de-DE", pl: "pl-PL", tr: "tr-TR", ru: "ru-RU", id: "id-ID" };
+  const lang = STRINGS[params.get("lang")] ? params.get("lang") : "en";
+  document.documentElement.lang = lang;
+  const tr = (key, vars = {}) => STRINGS[lang][key].replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
+  const fmtNum = (n) => n.toLocaleString(LOCALES[lang]);
+  document.getElementById("label").textContent = tr("friends");
+  document.getElementById("addmeLabel").textContent = tr("addMe");
+  document.getElementById("alertLabel").textContent = tr("newFriend");
   const key = params.get("k");
   const goal = Number(params.get("goal")) || 1000;
   if (params.get("compact") === "1") document.body.classList.add("compact");
@@ -121,12 +283,12 @@
   if (params.get("me")) {
     document.getElementById("addme").hidden = false;
     document.getElementById("addmeName").textContent = "@" + params.get("me");
-    if (params.get("cmd")) document.getElementById("addmeHow").textContent = `Mandami la richiesta e scrivi ${params.get("cmd")} TuoNome in chat`;
+    if (params.get("cmd")) document.getElementById("addmeHow").textContent = tr("howTo", { cmd: params.get("cmd") });
   }
   const RELAY = "https://ntfy.sh";
   const $ = (id) => document.getElementById(id);
 
-  // Personalizzazione (Pro): colore, suono, testo dell'avviso
+  // Customization (Pro): color, sound, alert text
   const color = /^[0-9a-f]{6}$/i.test(params.get("color") || "") ? "#" + params.get("color") : null;
   if (color) {
     document.documentElement.style.setProperty("--accent", color);
@@ -162,8 +324,8 @@
   let showing = false;
 
   function draw() {
-    $("count").textContent = count === null ? "—" : count.toLocaleString("it-IT");
-    $("goal").textContent = goal.toLocaleString("it-IT");
+    $("count").textContent = count === null ? "—" : fmtNum(count);
+    $("goal").textContent = fmtNum(goal);
     $("fill").style.width = count === null ? "0" : Math.min(100, (count / goal) * 100) + "%";
   }
 
@@ -180,10 +342,11 @@
     const isTurn = f.type === "turn";
     $("alertAvatar").hidden = !f.avatar;
     if (f.avatar) $("alertAvatar").src = f.avatar;
-    $("alertName").textContent = isTurn ? who : template ? template.replace(/\{nome\}/gi, who) : who;
-    $("alertLabel").textContent = isTurn ? "Tocca a te! 🎮" : f.source === "tiktok" ? "Benvenuto dalla live!" : "Nuovo amico!";
+    // {name} (and {nome}, used by older versions) is replaced with the friend's name.
+    $("alertName").textContent = isTurn ? who : template ? template.replace(/\{(name|nome)\}/gi, who) : who;
+    $("alertLabel").textContent = isTurn ? tr("yourTurn") : f.source === "tiktok" ? tr("fromLive") : tr("newFriend");
     const sub = $("alertSub");
-    sub.textContent = isTurn ? (f.left ? `Ancora in coda: ${f.left}` : "Ultimo della coda") : "";
+    sub.textContent = isTurn ? (f.left ? tr("left", { n: f.left }) : tr("last")) : "";
     sub.hidden = !sub.textContent;
     const box = $("alert");
     box.classList.toggle("turn", isTurn);
@@ -215,7 +378,7 @@
 
   function drawQueue(n) {
     $("queueLine").hidden = !n;
-    $("queueLine").textContent = `🎮 In coda per giocare: ${n}`;
+    $("queueLine").textContent = tr("queueLine", { n });
   }
 
   let hintTimer;
@@ -237,40 +400,85 @@
     if (ev.type === "hint" && live) showHint(ev.text);
     if (ev.type === "info" && live) showInfo(ev);
     if (typeof ev.queueCount === "number") drawQueue(ev.queueCount);
-    if (ev.type === "queue" && ev.joined && live) showHint(`${ev.joined} è in coda (#${ev.position})`, "ok");
+    if (ev.type === "queue" && ev.joined && live) showHint(tr("queued", { name: ev.joined, pos: ev.position }), "ok");
     draw();
     if (live) showNext();
   }
 
-  function parse(msg) {
+  // End-to-end encryption: events are AES-GCM encrypted by the extension. The key ("s") is only in
+  // this page's URL hash, which browsers never send to servers, so the relay only sees ciphertext.
+  const secret = params.get("s");
+  let sticky = false;
+  function stickyStatus(text) {
+    sticky = true;
+    status(text);
+  }
+  const fromB64url = (s) => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+  let cryptoKey = null;
+  async function getCryptoKey() {
+    if (!cryptoKey) cryptoKey = await crypto.subtle.importKey("raw", fromB64url(secret), "AES-GCM", false, ["decrypt"]);
+    return cryptoKey;
+  }
+
+  // Extracts the text of an ntfy message (or null for keepalive/open events).
+  function messageText(msg) {
     try {
       const outer = typeof msg === "string" ? JSON.parse(msg) : msg;
       if (outer.event && outer.event !== "message") return null;
-      return JSON.parse(outer.message);
+      return outer.message;
     } catch (_) {
       return null;
     }
   }
 
+  async function decode(text) {
+    let obj;
+    try {
+      obj = JSON.parse(text);
+    } catch (_) {
+      return null;
+    }
+    if (obj && obj.v === 1 && obj.iv && obj.d) {
+      if (!secret) {
+        stickyStatus(tr("oldLink"));
+        return null;
+      }
+      try {
+        const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromB64url(obj.iv) }, await getCryptoKey(), fromB64url(obj.d));
+        return JSON.parse(new TextDecoder().decode(plain));
+      } catch (_) {
+        return null; // wrong key or tampered message
+      }
+    }
+    // Unencrypted events are accepted only by old links without a key.
+    return secret ? null : obj;
+  }
+
+  async function receive(msg, live) {
+    const text = messageText(msg);
+    if (text == null) return;
+    handle(await decode(text), live);
+  }
+
   async function loadLast() {
-    // Recupera l'ultimo conteggio inviato (ntfy conserva i messaggi per alcune ore).
+    // Gets the latest count sent (ntfy keeps messages for a few hours).
     try {
       const res = await fetch(`${RELAY}/${key}/json?poll=1&since=12h`);
       const lines = (await res.text()).trim().split("\n").filter(Boolean);
-      for (const line of lines) handle(parse(line), false);
+      for (const line of lines) await receive(line, false);
     } catch (_) {}
   }
 
   function connect() {
     const es = new EventSource(`${RELAY}/${key}/sse`);
-    es.onopen = () => status("");
-    es.onmessage = (e) => handle(parse(e.data), true);
-    es.onerror = () => status("Riconnessione…");
+    es.onopen = () => sticky || status("");
+    es.onmessage = (e) => receive(e.data, true);
+    es.onerror = () => sticky || status(tr("reconnecting"));
   }
 
   draw();
   if (!key) {
-    status("Link incompleto: copia di nuovo il link dalla dashboard di RBX Toolkit.");
+    status(tr("badLink"));
   } else {
     loadLast().then(connect);
   }

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Third-party licenses – RBX Toolkit</title>
+<link rel="icon" href="logo.svg">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<main>
+  <header><img src="logo.svg" alt=""><a href="home.html">RBX Toolkit</a></header>
+  <h1>Third-party licenses</h1>
+  <p class="muted">Last updated: October 4, 2026</p>
+  <p>RBX Toolkit includes the following open-source components. Each one remains under its own license.</p>
+
+  <h2>ExtPay.js 3.1.2</h2>
+  <p>Library by Glench used to handle the optional Pro subscription through ExtensionPay.<br>
+    Source: <a href="https://github.com/Glench/ExtPay">github.com/Glench/ExtPay</a> · npm: <a href="https://www.npmjs.com/package/extpay">extpay</a></p>
+  <p>License: the project's <code>LICENSE</code> file states <strong>LGPL-3.0</strong>, while its <code>package.json</code> declares <strong>AGPL-3.0-or-later</strong>.
+    Full texts: <a href="https://www.gnu.org/licenses/lgpl-3.0.html">GNU LGPL v3</a> (which incorporates the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a>)
+    and <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>.</p>
+  <p>The library is shipped unminified as separate files inside the extension (<code>vendor/extpay-content.js</code>, identical to the original <code>dist/ExtPay.js</code>, and
+    <code>vendor/extpay.module.js</code>, the same file with a single <code>export default ExtPay;</code> line added at the end so it can be loaded as an ES module).
+    You can read and replace these files in the installed extension. The source of our modified copy is the file itself.</p>
+
+  <h2>webextension-polyfill 0.7.0</h2>
+  <p>Bundled inside ExtPay.js. © Mozilla. Source: <a href="https://github.com/mozilla/webextension-polyfill">github.com/mozilla/webextension-polyfill</a>.<br>
+    License: <a href="https://www.mozilla.org/MPL/2.0/">Mozilla Public License 2.0</a>. The source code is included, unmodified, in the files listed above.</p>
+
+  <h2>Services</h2>
+  <p>RBX Toolkit uses, but does not include the code of, these services: <a href="https://ntfy.sh">ntfy.sh</a> (OBS widget relay, optional),
+    <a href="https://extensionpay.com">ExtensionPay</a> and <a href="https://stripe.com">Stripe</a> (payments, optional), <a href="https://pages.github.com">GitHub Pages</a> (hosting of the widget and of these pages).</p>
+
+  <h2>RBX Toolkit</h2>
+  <p>The rest of RBX Toolkit (code, logo and texts) is © 2026 MichyLuna. All rights reserved, except for the license granted in the <a href="terms.html">Terms of Use</a>.</p>
+
+  <footer><div class="links"><a href="home.html">RBX Toolkit</a><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms of use</a></div></footer>
+</main>
+</body>
+</html>
