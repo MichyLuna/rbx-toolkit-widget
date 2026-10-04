@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>RBX Toolkit – Widget OBS</title>
+<style>
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; background: transparent; overflow: hidden; }
+  body {
+    padding: 12px; color: #fff;
+    font: 14px/1.3 "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  }
+  .card {
+    width: 420px; padding: 16px 18px; border-radius: 18px;
+    background: rgba(23, 21, 31, .92); border: 1px solid var(--accent, #ff2d55);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+  }
+  .top { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 44px; height: 44px; flex: none; }
+  .title { display: flex; flex-direction: column; }
+  .label { color: #b9b3c9; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .count { font-size: 28px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .count span { color: #8d879e; font-weight: 700; font-size: 20px; }
+  .bar { height: 10px; margin-top: 12px; border-radius: 5px; background: #2a2638; overflow: hidden; }
+  #fill { height: 100%; width: 0; border-radius: 5px; background: var(--accent, #ff2d55); transition: width .8s cubic-bezier(.2, .8, .2, 1); }
+  .alert {
+    display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 10px 12px; border-radius: 14px;
+    background: var(--accent-soft, rgba(255, 45, 85, .3));
+    animation: in .55s cubic-bezier(.2, 1.4, .4, 1);
+  }
+  .alert img { width: 48px; height: 48px; border-radius: 50%; background: #2a2638; }
+  .alert strong { display: block; font-size: 18px; }
+  @keyframes in { from { transform: translateY(14px) scale(.92); opacity: 0; } }
+  .status { margin-top: 8px; font-size: 11px; color: #8d879e; }
+  body.compact .bar, body.compact .top { display: none; }
+  body.compact .alert { margin-top: 0; }
+
+  /* Riquadro "Aggiungimi su Roblox" */
+  .addme { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .06); text-align: center; }
+  .addme .label { display: block; }
+  .addme strong { display: block; font-size: 20px; margin-top: 2px; }
+  .addme small { display: block; color: #b9b3c9; font-size: 12px; margin-top: 4px; }
+
+  /* Suggerimento (es. "mandami prima la richiesta") */
+  .hint { margin-top: 10px; padding: 8px 12px; border-radius: 12px; background: rgba(255, 176, 32, .18); color: #ffd58a; font-weight: 600; font-size: 13px; animation: in .4s ease-out; }
+
+  .hint.ok { background: rgba(47, 209, 135, .18); color: #8ff0c0; }
+
+  /* Info (!roblox, !gioco) */
+  .info { margin-top: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(91, 140, 255, .2); border: 1px solid rgba(91, 140, 255, .45); animation: in .5s cubic-bezier(.2, 1.4, .4, 1); }
+  .info strong { display: block; font-size: 20px; margin-top: 2px; }
+  .info small { display: block; color: #c9d6ff; font-size: 12px; margin-top: 4px; }
+
+  /* Coda "Gioca con me" */
+  .queue-line { margin-top: 10px; font-size: 13px; font-weight: 700; color: #b9b3c9; }
+  .alert.turn { background: linear-gradient(135deg, rgba(47, 209, 135, .35), rgba(47, 209, 135, .12)); border: 1px solid rgba(47, 209, 135, .6); }
+  .alert small { display: block; color: #b9b3c9; font-size: 12px; margin-top: 2px; }
+
+  /* Layout verticale per TikTok */
+  body.vertical .card { width: 300px; padding: 18px; text-align: center; }
+  body.vertical .top { flex-direction: column; gap: 6px; }
+  body.vertical .title { align-items: center; }
+  body.vertical .logo { width: 52px; height: 52px; }
+  body.vertical .count { font-size: 34px; }
+  body.vertical .alert { flex-direction: column; text-align: center; gap: 8px; padding: 14px; }
+  body.vertical .alert img { width: 72px; height: 72px; }
+  body.vertical .alert strong { font-size: 22px; }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="top">
+      <svg class="logo" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset="1" stop-color="#ff6b3d"/></linearGradient>
+          <mask id="gap"><rect width="100" height="100" fill="#fff"/><circle cx="71" cy="71" r="21.5" fill="#000"/></mask>
+          <clipPath id="sh"><rect width="100" height="79"/></clipPath>
+        </defs>
+        <rect width="100" height="100" rx="23" fill="url(#g)"/>
+        <g fill="#fff" mask="url(#gap)"><circle cx="40" cy="34" r="13.5"/><circle cx="40" cy="86" r="27" clip-path="url(#sh)"/></g>
+        <circle cx="71" cy="71" r="17" fill="#16131f"/><rect x="63.5" y="67.8" width="15" height="6.4" rx="3.2" fill="#fff"/>
+      </svg>
+      <div class="title">
+        <span class="label" id="label">Amici Roblox</span>
+        <span class="count"><b id="count">—</b> / <span id="goal">1000</span></span>
+      </div>
+    </div>
+    <div class="bar"><div id="fill"></div></div>
+    <div id="addme" class="addme" hidden>
+      <span class="label">Aggiungimi su Roblox</span>
+      <strong id="addmeName"></strong>
+      <small id="addmeHow"></small>
+    </div>
+    <div id="alert" class="alert" hidden>
+      <img id="alertAvatar" alt="">
+      <div>
+        <span class="label" id="alertLabel">Nuovo amico!</span>
+        <strong id="alertName"></strong>
+        <small id="alertSub" hidden></small>
+      </div>
+    </div>
+    <div id="info" class="info" hidden>
+      <span class="label" id="infoTitle"></span>
+      <strong id="infoText"></strong>
+      <small id="infoSub"></small>
+    </div>
+    <div class="queue-line" id="queueLine" hidden></div>
+    <div class="hint" id="hint" hidden></div>
+    <div class="status" id="status" hidden></div>
+  </div>
+
+<script>
+  // Parametri nell'URL: #k=<codice>&goal=1000&compact=1&label=Testo
+  const params = new URLSearchParams(location.hash.slice(1) || location.search.slice(1));
+  const key = params.get("k");
+  const goal = Number(params.get("goal")) || 1000;
+  if (params.get("compact") === "1") document.body.classList.add("compact");
+  if (params.get("label")) document.getElementById("label").textContent = params.get("label");
+  if (params.get("v") === "1") document.body.classList.add("vertical");
+  if (params.get("me")) {
+    document.getElementById("addme").hidden = false;
+    document.getElementById("addmeName").textContent = "@" + params.get("me");
+    if (params.get("cmd")) document.getElementById("addmeHow").textContent = `Mandami la richiesta e scrivi ${params.get("cmd")} TuoNome in chat`;
+  }
+  const RELAY = "https://ntfy.sh";
+  const $ = (id) => document.getElementById(id);
+
+  // Personalizzazione (Pro): colore, suono, testo dell'avviso
+  const color = /^[0-9a-f]{6}$/i.test(params.get("color") || "") ? "#" + params.get("color") : null;
+  if (color) {
+    document.documentElement.style.setProperty("--accent", color);
+    document.documentElement.style.setProperty("--accent-soft", color + "55");
+  }
+  const sound = params.get("sound") === "1";
+  const template = params.get("tpl") || "";
+
+  let audioCtx;
+  function chime(happy = true) {
+    if (!sound) return;
+    try {
+      audioCtx = audioCtx || new AudioContext();
+      const notes = happy ? [660, 880, 1320] : [520, 780];
+      notes.forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = "sine";
+        o.frequency.value = f;
+        const t = audioCtx.currentTime + i * 0.12;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        o.connect(g).connect(audioCtx.destination);
+        o.start(t);
+        o.stop(t + 0.4);
+      });
+    } catch (_) {}
+  }
+
+  let count = null;
+  const queue = [];
+  let showing = false;
+
+  function draw() {
+    $("count").textContent = count === null ? "—" : count.toLocaleString("it-IT");
+    $("goal").textContent = goal.toLocaleString("it-IT");
+    $("fill").style.width = count === null ? "0" : Math.min(100, (count / goal) * 100) + "%";
+  }
+
+  function status(text) {
+    $("status").hidden = !text;
+    $("status").textContent = text || "";
+  }
+
+  function showNext() {
+    if (showing || !queue.length) return;
+    showing = true;
+    const f = queue.shift();
+    const who = f.displayName || f.name || "";
+    const isTurn = f.type === "turn";
+    $("alertAvatar").hidden = !f.avatar;
+    if (f.avatar) $("alertAvatar").src = f.avatar;
+    $("alertName").textContent = isTurn ? who : template ? template.replace(/\{nome\}/gi, who) : who;
+    $("alertLabel").textContent = isTurn ? "Tocca a te! 🎮" : f.source === "tiktok" ? "Benvenuto dalla live!" : "Nuovo amico!";
+    const sub = $("alertSub");
+    sub.textContent = isTurn ? (f.left ? `Ancora in coda: ${f.left}` : "Ultimo della coda") : "";
+    sub.hidden = !sub.textContent;
+    const box = $("alert");
+    box.classList.toggle("turn", isTurn);
+    chime(true);
+    box.hidden = true;
+    void box.offsetWidth;
+    box.hidden = false;
+    setTimeout(() => {
+      box.hidden = true;
+      showing = false;
+      showNext();
+    }, 6000);
+  }
+
+  let infoTimer;
+  function showInfo(ev) {
+    $("infoTitle").textContent = ev.title || "";
+    $("infoText").textContent = ev.text || "";
+    $("infoSub").textContent = ev.sub || "";
+    $("infoSub").hidden = !ev.sub;
+    const box = $("info");
+    box.hidden = true;
+    void box.offsetWidth;
+    box.hidden = false;
+    chime(false);
+    clearTimeout(infoTimer);
+    infoTimer = setTimeout(() => (box.hidden = true), 9000);
+  }
+
+  function drawQueue(n) {
+    $("queueLine").hidden = !n;
+    $("queueLine").textContent = `🎮 In coda per giocare: ${n}`;
+  }
+
+  let hintTimer;
+  function showHint(text, kind = "") {
+    const h = $("hint");
+    h.className = "hint " + kind;
+    h.textContent = text;
+    h.hidden = true;
+    void h.offsetWidth;
+    h.hidden = false;
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(() => (h.hidden = true), 7000);
+  }
+
+  function handle(ev, live) {
+    if (!ev || typeof ev !== "object") return;
+    if (typeof ev.count === "number") count = ev.count;
+    if ((ev.type === "friend" || ev.type === "turn") && live) queue.push(ev);
+    if (ev.type === "hint" && live) showHint(ev.text);
+    if (ev.type === "info" && live) showInfo(ev);
+    if (typeof ev.queueCount === "number") drawQueue(ev.queueCount);
+    if (ev.type === "queue" && ev.joined && live) showHint(`${ev.joined} è in coda (#${ev.position})`, "ok");
+    draw();
+    if (live) showNext();
+  }
+
+  function parse(msg) {
+    try {
+      const outer = typeof msg === "string" ? JSON.parse(msg) : msg;
+      if (outer.event && outer.event !== "message") return null;
+      return JSON.parse(outer.message);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function loadLast() {
+    // Recupera l'ultimo conteggio inviato (ntfy conserva i messaggi per alcune ore).
+    try {
+      const res = await fetch(`${RELAY}/${key}/json?poll=1&since=12h`);
+      const lines = (await res.text()).trim().split("\n").filter(Boolean);
+      for (const line of lines) handle(parse(line), false);
+    } catch (_) {}
+  }
+
+  function connect() {
+    const es = new EventSource(`${RELAY}/${key}/sse`);
+    es.onopen = () => status("");
+    es.onmessage = (e) => handle(parse(e.data), true);
+    es.onerror = () => status("Riconnessione…");
+  }
+
+  draw();
+  if (!key) {
+    status("Link incompleto: copia di nuovo il link dalla dashboard di RBX Toolkit.");
+  } else {
+    loadLast().then(connect);
+  }
+</script>
+</body>
+</html>
