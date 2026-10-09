@@ -23,7 +23,7 @@
     </div>
 
     <h2>1. Who we are</h2>
-    <p>RBX Toolkit ("the extension") is an independent browser extension developed by <strong>MichyLuna</strong> ("we"). It is not affiliated with, endorsed by or sponsored by Roblox Corporation or TikTok.
+    <p>RBX Toolkit ("the extension") is an independent browser extension developed by <strong>MichyLuna</strong> ("we"). It is not affiliated with, endorsed by or sponsored by Roblox Corporation, TikTok, Twitch, YouTube or Kick.
       Contact: <a href="https://github.com/MichyLuna/rbx-toolkit-widget/issues">github.com/MichyLuna/rbx-toolkit-widget/issues</a>.</p>
 
     <h2>2. What the extension does with your Roblox account</h2>
@@ -39,20 +39,21 @@
       <tr><td>Snapshot of your friend list (Roblox user IDs, usernames, display names) and friend history</td><td>"Who unfriended me" feature</td></tr>
       <tr><td>Favorite and protected friends</td><td>Notifications and cleanup protection</td></tr>
       <tr><td>Playtime per game</td><td>Playtime statistics</td></tr>
-      <tr><td>Auto-accept log, chat command log and "Play with me" queue: Roblox usernames/IDs/avatars and the TikTok usernames of viewers who typed a command</td><td>Streamer tools and live statistics</td></tr>
+      <tr><td>Auto-accept log, chat command log and "Play with me" queue: Roblox usernames/IDs/avatars and the chat usernames (TikTok, Twitch, YouTube or Kick) of viewers who typed a command</td><td>Streamer tools and live statistics</td></tr>
     </table>
     <p>Logs are capped (e.g. the last 500–3,000 entries). You can delete everything at any time in <em>Settings → Delete all extension data</em>, or by uninstalling the extension.
       ExtensionPay's library also keeps a technical identifier in <code>chrome.storage.sync</code>, which your browser may sync to your browser account if sync is enabled.</p>
 
-    <h2>4. TikTok live pages</h2>
-    <p>If you enable chat commands, the extension reads the comments shown on <strong>your own</strong> TikTok live page, locally in your browser, to detect commands such as <code>!add</code> or <code>!join</code>.
-      It does not send anything to TikTok and does not write in the chat. Only the TikTok username and command of viewers who type a supported command are stored, locally, as described above.
+    <h2>4. Live chat pages (TikTok, Twitch, YouTube, Kick)</h2>
+    <p>If you enable chat commands, the extension reads the comments shown on <strong>your own</strong> live page, locally in your browser, to detect commands such as <code>!add</code> or <code>!join</code>.
+      On TikTok this applies to the live page you open. On Twitch, YouTube and Kick (Pro) it reads <strong>only the chat of the channel or live you enter in the dashboard</strong> and never the other streams you watch.
+      It does not send anything to these platforms and does not write in the chat. Only the chat username, platform and command of viewers who type a supported command are stored, locally, as described above.
       If you stream publicly, you are responsible for informing your viewers that their chat commands are processed.</p>
 
     <h2>5. OBS widget (optional, off by default)</h2>
     <p>If you enable the OBS widget, the extension publishes events to <a href="https://ntfy.sh">ntfy.sh</a> on a channel with a random secret name, and the widget page
       (hosted on GitHub Pages) receives them. Events can contain: friend count, Roblox user IDs, usernames, display names and avatar image links of new friends or queued viewers,
-      the TikTok username of a queued viewer, short status texts and, for <code>!game</code>, the name of the game you are playing.
+      the chat username and platform of a queued viewer, short status texts and, for <code>!game</code>, the name of the game you are playing.
       Events are end-to-end encrypted (AES-GCM, 256-bit) before leaving your browser: the key exists only in your widget link, in the part after "#", which browsers never send to any server.
       ntfy.sh therefore only relays and briefly stores (up to about 12 hours) unreadable data, plus technical metadata such as IP address and time of the request.
       Anyone who has your widget link can decrypt the events, so keep it private; you can regenerate it (new channel and new key) at any time.
@@ -69,7 +70,7 @@
     <table>
       <tr><th>Permission</th><th>Used for</th></tr>
       <tr><td>Access to roblox.com</td><td>Calling Roblox web services, theme and "Find servers" button on roblox.com</td></tr>
-      <tr><td>Access to tiktok.com (content script)</td><td>Reading chat commands on your live page</td></tr>
+      <tr><td>Access to tiktok.com, twitch.tv, kick.com and youtube.com/live_chat (content script)</td><td>Reading chat commands on your own live chat (Twitch, YouTube and Kick: only the channel you set, Pro)</td></tr>
       <tr><td>Access to ntfy.sh</td><td>Sending events to your OBS widget, only if enabled</td></tr>
       <tr><td>Access to extensionpay.com (content script)</td><td>Confirming a completed payment</td></tr>
       <tr><td>storage, alarms, notifications</td><td>Saving data locally, background checks, system notifications</td></tr>
@@ -79,7 +80,7 @@
     <p>The extension does not collect personal data on any server of ours. Purchasing Pro requires being of legal age or having the consent of a parent or guardian.</p>
 
     <h2>9. Your rights</h2>
-    <p>Because we do not hold your data, you can view, export (friend list backup) and delete it directly in the extension. For data held by Roblox, TikTok, ntfy.sh, GitHub,
+    <p>Because we do not hold your data, you can view, export (friend list backup) and delete it directly in the extension. For data held by Roblox, TikTok, Twitch, YouTube, Kick, ntfy.sh, GitHub,
       ExtensionPay or Stripe, contact them directly. If you are in the EU/EEA you also have the right to lodge a complaint with your data protection authority
       (in Italy: <a href="https://www.garanteprivacy.it">Garante per la protezione dei dati personali</a>).</p>
 
@@ -98,7 +99,7 @@
     </div>
 
     <h2>1. Chi siamo</h2>
-    <p>RBX Toolkit ("l'estensione") è un'estensione per browser indipendente sviluppata da <strong>MichyLuna</strong> ("noi"). Non è affiliata, approvata o sponsorizzata da Roblox Corporation o TikTok.
+    <p>RBX Toolkit ("l'estensione") è un'estensione per browser indipendente sviluppata da <strong>MichyLuna</strong> ("noi"). Non è affiliata, approvata o sponsorizzata da Roblox Corporation, TikTok, Twitch, YouTube o Kick.
       Contatti: <a href="https://github.com/MichyLuna/rbx-toolkit-widget/issues">github.com/MichyLuna/rbx-toolkit-widget/issues</a>.</p>
 
     <h2>2. Cosa fa l'estensione con il tuo account Roblox</h2>
@@ -114,20 +115,21 @@
       <tr><td>Istantanea della lista amici (ID, username e nomi visualizzati Roblox) e storico amicizie</td><td>Funzione "chi mi ha rimosso"</td></tr>
       <tr><td>Amici preferiti e protetti</td><td>Notifiche e protezione dalla pulizia</td></tr>
       <tr><td>Tempo di gioco per gioco</td><td>Statistiche del tempo di gioco</td></tr>
-      <tr><td>Registro auto-accetta, registro dei comandi in chat e coda "Gioca con me": username/ID/avatar Roblox e username TikTok degli spettatori che hanno scritto un comando</td><td>Strumenti per streamer e statistiche della live</td></tr>
+      <tr><td>Registro auto-accetta, registro dei comandi in chat e coda "Gioca con me": username/ID/avatar Roblox e username in chat (TikTok, Twitch, YouTube o Kick) degli spettatori che hanno scritto un comando</td><td>Strumenti per streamer e statistiche della live</td></tr>
     </table>
     <p>I registri hanno un limite (ad esempio le ultime 500–3.000 voci). Puoi cancellare tutto in qualsiasi momento da <em>Impostazioni → Cancella tutti i dati dell'estensione</em> oppure disinstallando l'estensione.
       La libreria di ExtensionPay conserva anche un identificativo tecnico in <code>chrome.storage.sync</code>, che il browser può sincronizzare con il tuo account del browser se la sincronizzazione è attiva.</p>
 
-    <h2>4. Pagine live di TikTok</h2>
-    <p>Se attivi i comandi in chat, l'estensione legge i commenti mostrati nella <strong>tua</strong> pagina live di TikTok, localmente nel tuo browser, per riconoscere comandi come <code>!add</code> o <code>!join</code>.
-      Non invia nulla a TikTok e non scrive in chat. Vengono salvati, solo in locale, lo username TikTok e il comando degli spettatori che scrivono un comando supportato.
+    <h2>4. Pagine della chat live (TikTok, Twitch, YouTube, Kick)</h2>
+    <p>Se attivi i comandi in chat, l'estensione legge i commenti mostrati nella <strong>tua</strong> pagina live, localmente nel tuo browser, per riconoscere comandi come <code>!add</code> o <code>!join</code>.
+      Su TikTok vale per la pagina live che apri. Su Twitch, YouTube e Kick (Pro) legge <strong>solo la chat del canale o della live che indichi nella dashboard</strong>, mai le altre live che guardi.
+      Non invia nulla a queste piattaforme e non scrive in chat. Vengono salvati, solo in locale, lo username in chat, la piattaforma e il comando degli spettatori che scrivono un comando supportato.
       Se fai live pubbliche, sei tu a dover informare i tuoi spettatori che i loro comandi in chat vengono elaborati.</p>
 
     <h2>5. Widget OBS (facoltativo, disattivato di default)</h2>
     <p>Se attivi il widget OBS, l'estensione pubblica eventi su <a href="https://ntfy.sh">ntfy.sh</a> in un canale con nome segreto casuale, e la pagina del widget
       (ospitata su GitHub Pages) li riceve. Gli eventi possono contenere: numero di amici, ID, username, nomi visualizzati e link agli avatar dei nuovi amici o degli spettatori in coda,
-      lo username TikTok di uno spettatore in coda, brevi testi di stato e, per <code>!game</code>, il nome del gioco a cui stai giocando.
+      lo username in chat e la piattaforma di uno spettatore in coda, brevi testi di stato e, per <code>!game</code>, il nome del gioco a cui stai giocando.
       Gli eventi sono cifrati end-to-end (AES-GCM a 256 bit) prima di lasciare il tuo browser: la chiave esiste solo nel link del widget, nella parte dopo "#", che i browser non inviano mai ai server.
       ntfy.sh quindi inoltra e conserva per poco tempo (fino a circa 12 ore) solo dati illeggibili, più metadati tecnici come indirizzo IP e orario della richiesta.
       Chiunque abbia il link del tuo widget può decifrare gli eventi, quindi tienilo privato; puoi rigenerarlo (nuovo canale e nuova chiave) quando vuoi.
@@ -144,7 +146,7 @@
     <table>
       <tr><th>Permesso</th><th>A cosa serve</th></tr>
       <tr><td>Accesso a roblox.com</td><td>Chiamare i servizi web di Roblox, tema e pulsante "Trova server" su roblox.com</td></tr>
-      <tr><td>Accesso a tiktok.com (content script)</td><td>Leggere i comandi nella chat della tua live</td></tr>
+      <tr><td>Accesso a tiktok.com, twitch.tv, kick.com e youtube.com/live_chat (content script)</td><td>Leggere i comandi nella chat della tua live (Twitch, YouTube e Kick: solo il canale che imposti, Pro)</td></tr>
       <tr><td>Accesso a ntfy.sh</td><td>Inviare eventi al widget OBS, solo se attivo</td></tr>
       <tr><td>Accesso a extensionpay.com (content script)</td><td>Confermare un pagamento completato</td></tr>
       <tr><td>storage, alarms, notifications</td><td>Salvare dati in locale, controlli in background, notifiche di sistema</td></tr>
@@ -154,7 +156,7 @@
     <p>L'estensione non raccoglie dati personali su server nostri. Per acquistare Pro occorre essere maggiorenni o avere il consenso di un genitore o tutore.</p>
 
     <h2>9. I tuoi diritti</h2>
-    <p>Poiché non conserviamo i tuoi dati, puoi vederli, esportarli (backup della lista amici) e cancellarli direttamente nell'estensione. Per i dati in possesso di Roblox, TikTok, ntfy.sh, GitHub,
+    <p>Poiché non conserviamo i tuoi dati, puoi vederli, esportarli (backup della lista amici) e cancellarli direttamente nell'estensione. Per i dati in possesso di Roblox, TikTok, Twitch, YouTube, Kick, ntfy.sh, GitHub,
       ExtensionPay o Stripe, rivolgiti direttamente a loro. Hai inoltre il diritto di proporre reclamo al <a href="https://www.garanteprivacy.it">Garante per la protezione dei dati personali</a>.</p>
 
     <h2>10. Modifiche</h2>

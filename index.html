@@ -344,7 +344,7 @@
     if (f.avatar) $("alertAvatar").src = f.avatar;
     // {name} (and {nome}, used by older versions) is replaced with the friend's name.
     $("alertName").textContent = isTurn ? who : template ? template.replace(/\{(name|nome)\}/gi, who) : who;
-    $("alertLabel").textContent = isTurn ? tr("yourTurn") : f.source === "tiktok" ? tr("fromLive") : tr("newFriend");
+    $("alertLabel").textContent = isTurn ? tr("yourTurn") : f.source ? tr("fromLive") : tr("newFriend");
     const sub = $("alertSub");
     sub.textContent = isTurn ? (f.left ? tr("left", { n: f.left }) : tr("last")) : "";
     sub.hidden = !sub.textContent;
